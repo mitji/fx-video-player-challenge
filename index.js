@@ -51,7 +51,9 @@ function destroyPlayer() {
 
 // set up handlers
 const loadBtn = document.getElementById("load-btn");
-const playPauseBtn = document.getElementById("playPause-btn");
+const playPauseBtn = document.querySelector(".playPause-btn");
+const rewindBtn = document.querySelector(".rewind-btn");
+const ffBtn = document.querySelector(".ff-btn");
 const destroyBtn = document.getElementById("destroy-btn");
 
 loadBtn.addEventListener("click", () => {
@@ -64,4 +66,12 @@ playPauseBtn.addEventListener("click", () => {
 
 destroyBtn.addEventListener("click", () => {
     destroyPlayer();
+});
+
+rewindBtn.addEventListener("click", () => {
+
+});
+
+ffBtn.addEventListener("click", () => {
+    
 });

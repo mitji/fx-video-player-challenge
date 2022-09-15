@@ -32,11 +32,14 @@ async function shakaInitPlayer(manifestUri) {
     video = document.querySelector('video');
     player = new shaka.Player(video);
 
-    // Attach player to the window to make it easy to access in the JS console.
+    // Attach player to the window to make it easy to access in the JS console
     window.shaka = player;
 
     // Listen for error events.
     player.addEventListener('error', shakaOnErrorEvent);
+
+    // Listen for timeupdates here to update UI time
+    // ...
 
     // set config
     player.configure(shakaConfig);
@@ -50,7 +53,10 @@ async function shakaInitPlayer(manifestUri) {
 
         // pull text track
         getSubtitleTracks();
-        
+
+        // pull audio tracks
+        // ...
+
         // set progress bar duration
         setProgressBar();
     } catch (e) {
@@ -58,20 +64,18 @@ async function shakaInitPlayer(manifestUri) {
     }
 }
 
-function shakaOnErrorEvent(event) {
-    // Extract the shaka.util.Error object from the event.
-    alert(event.detail);
-}
-
 function getSubtitleTracks() {
-    // get subtitle tracks available
+    // get avaialable subtitle tracks from Shaka
     const textTracks = player.getTextTracks();
-    // set default, otherwise the first option will be set ("el")
+
+    // select default language
     const englishSubtitles = textTracks.find(el => el.language == "en");
     const { id } = englishSubtitles;
 
+    // disable default UI subtitles
     player.setTextTrackVisibility(false);
 
+    // set Shaka default textTrack
     if (englishSubtitles) {
         player.selectTextTrack(textTracks[id - 1]);     
     }
@@ -80,7 +84,7 @@ function getSubtitleTracks() {
     const subtitlesWrapper = document.querySelector(".video-container__subtitle-tracks");
     textTracks.forEach(({language}) => {
         let item = document.createElement("div");
-        item.className = "subtitle-item";
+        item.className = "track-item";
         item.innerText = language;
         subtitlesWrapper.appendChild(item);
         item.addEventListener("click", ({ target }) => {
@@ -91,6 +95,16 @@ function getSubtitleTracks() {
     video.textTracks[0].addEventListener('cuechange', ({target: {activeCues} = {}}) => {
         if (activeCues) renderSubtitle(activeCues);
     })
+}
+
+function getAudioTracks() {
+    // get available audio tracks from Shaka
+
+    // select default language
+
+    // set Shaka default audioTrack
+
+    // add audio options to UI
 }
 
 function renderSubtitle(activeCues) {
@@ -114,4 +128,9 @@ function setProgressBar() {
         const pos = (e.pageX  - rect.left) / progress.offsetWidth;
         video.currentTime = pos * video.duration;
     });
+}
+
+function shakaOnErrorEvent(event) {
+    // Extract the shaka.util.Error object from the event.
+    alert(event.detail);
 }
